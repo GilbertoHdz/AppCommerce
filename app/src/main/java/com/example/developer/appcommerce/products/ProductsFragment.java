@@ -1,4 +1,4 @@
-package com.example.developer.appcommerce.data.products;
+package com.example.developer.appcommerce.products;
 
 
 import android.os.Bundle;
