@@ -3,6 +3,7 @@ package com.example.developer.appcommerce.products;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -13,13 +14,36 @@ import com.example.developer.appcommerce.R;
 
 public class ProductsActivity extends AppCompatActivity {
 
+    private Toolbar mToolbar;
+    private Fragment mProductsFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_products);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
+        //Referencias UI
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mProductsFragment =
+                getSupportFragmentManager().findFragmentById(R.id.products_container);
+
+        // Setup
+        setUpToolbar();
+        setUpProductsFragment();
+    }
+
+    private void setUpToolbar() {
+        setSupportActionBar(mToolbar);
+    }
+
+    private void setUpProductsFragment(){
+        if (mProductsFragment == null) {
+            mProductsFragment = ProductsFragment.newInstance(null, null);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.products_container, mProductsFragment)
+                    .commit();
+        }
     }
 
     @Override
