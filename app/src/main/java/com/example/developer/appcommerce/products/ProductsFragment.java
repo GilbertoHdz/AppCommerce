@@ -9,18 +9,20 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.developer.appcommerce.R;
 import com.example.developer.appcommerce.products.domain.model.Product;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ProductsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProductsFragment extends Fragment {
+public class ProductsFragment extends Fragment implements ProductsMvp.View {
 
     private RecyclerView mProductsList;
     private ProductsAdapter mProductsAdapter;
@@ -86,5 +88,66 @@ public class ProductsFragment extends Fragment {
 
             }
         });
+    }
+
+    @Override
+    public void showProducts(List<Product> products) {
+
+        //Reemplazar los datos del adapter
+        mProductsAdapter.replaceData(products);
+
+        //Mostrar la lista
+        mProductsList.setVisibility(View.VISIBLE);
+
+        //Ocular el estado Vacio
+        mEmptyView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showLoadingState(final boolean show) {
+        //*Iniciar la animacion de la recarga*
+
+        //Primero Comprobar que el fragmento esta disponible
+        if (getView() == null) {
+            return;
+        }
+
+        //Se utiliza POST(Ejecutar nueva tarea) para encolar las llamas de recarga y
+        //evitar posibles errores en cuanto concurrencia.
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(show);
+            }
+        });
+    }
+
+    @Override
+    public void showEmptyState() {
+        //Solo mostramos el View Vacio y Ocultamos la Lista
+        mProductsList.setVisibility(View.GONE);
+        mEmptyView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showProductsError(String msg) {
+        //Los errores provenientes desde el Presentador se manejan con un Toast
+        Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG);
+    }
+
+    @Override
+    public void showProductsPage(List<Product> products) {
+        //Se genera una pila los productos a la pagina
+        mProductsAdapter.addData(products);
+    }
+
+    @Override
+    public void showLoadMoreIndicator(boolean show) {
+
+    }
+
+    @Override
+    public void allowMoreData(boolean show) {
+
     }
 }
