@@ -174,7 +174,9 @@ public class ProductsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         @Override
         public void onClick(View v) {
-
+            int position = getAdapterPosition();
+            Product product = getItem(position);
+            mItemListener.onProductClick(product);
         }
     }
 

@@ -23,7 +23,7 @@ public class MemoryProductsDataSource implements IMemoryProductsDataSource {
         //Criteria
         ArrayList<Product> products =
                 Lists.newArrayList(mCachedProducts.values());
-        return products;
+        return criteria.match(products);
     }
 
     @Override
