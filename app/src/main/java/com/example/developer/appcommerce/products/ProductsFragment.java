@@ -177,11 +177,17 @@ public class ProductsFragment extends Fragment implements ProductsMvp.View {
 
     @Override
     public void showLoadMoreIndicator(boolean show) {
-
+        //muestra el view de “cargar más” y
+        if (!show) {
+            mProductsAdapter.dataFinishedLoading();
+        } else {
+            mProductsAdapter.dataStartedLoading();
+        }
     }
 
     @Override
     public void allowMoreData(boolean show) {
-
+        //determina si aún hay datos.
+        mProductsAdapter.setMoreData(show);
     }
 }

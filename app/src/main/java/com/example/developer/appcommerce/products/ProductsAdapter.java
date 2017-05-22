@@ -112,6 +112,31 @@ public class ProductsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public Product getItem(int position) {
         return mProducts.get(position);
     }
+
+    /*
+        levanta la bandera de carga activa. Además notifica sobre la inserción de
+        un nuevo elemento en la última posición (loading view).
+     */
+    public void dataStartedLoading() {
+        if (mLoading) return;
+        mLoading = true; notifyItemInserted(getLoadingMoreItemPosition());
+    }
+
+    //en complemento, la desactiva y remueve el ítem.
+    public void dataFinishedLoading() {
+        if (!mLoading) return;
+        mLoading = false; notifyItemRemoved(getLoadingMoreItemPosition());
+    }
+
+    //solo determina si hay más datos o no.
+    public void setMoreData(boolean more) {
+        mMoreData = more;
+    }
+
+    private int getLoadingMoreItemPosition() {
+        return mLoading ? getItemCount() - 1 : RecyclerView.NO_POSITION;
+    }
+
     public int getDataItemCount() {
         return mProducts.size();
     }

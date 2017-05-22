@@ -2,6 +2,7 @@ package com.example.developer.appcommerce.data.products.datasource.cloud;
 
 import android.os.Handler;
 
+import com.example.developer.appcommerce.products.domain.criteria.ProductCriteria;
 import com.example.developer.appcommerce.products.domain.model.Product;
 import com.google.common.collect.Lists;
 
@@ -31,7 +32,7 @@ public class CloudProductsDataSource implements ICloudProductsDataSource {
     }
 
     @Override
-    public void getProducts(final ProductServiceCallback callback) {
+    public void getProducts(final ProductServiceCallback callback, ProductCriteria criteria) {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -40,5 +41,4 @@ public class CloudProductsDataSource implements ICloudProductsDataSource {
             }
         }, LATENCY);
     }
-
 }
