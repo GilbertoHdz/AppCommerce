@@ -31,12 +31,12 @@ public class CloudProductsDataSource implements ICloudProductsDataSource {
     }
 
     @Override
-    public void getProducts(ProductServiceCallback callback) {
+    public void getProducts(final ProductServiceCallback callback) {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                //callback.onLoaded( Lists.newArrayList(API_DATA.values()) );
+                callback.onLoaded( Lists.newArrayList(API_DATA.values()) );
             }
         }, LATENCY);
     }

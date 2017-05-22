@@ -18,11 +18,12 @@ public interface IProductsRepository {
 
         void onProductsLoaded(List<Product> products);
 
-        void onDataNotAvaliable(String error);
-
-        void getProducts(GetProductsCallback callback);
-
-        void refreshProducts();
-
+        void onDataNotAvailable(String error);
     }
+
+    void getProducts(GetProductsCallback callback);
+
+    void refreshProducts();
+
+
 }
