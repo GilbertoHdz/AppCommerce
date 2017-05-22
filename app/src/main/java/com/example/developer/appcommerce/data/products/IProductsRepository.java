@@ -1,5 +1,6 @@
 package com.example.developer.appcommerce.data.products;
 
+import com.example.developer.appcommerce.products.domain.criteria.ProductCriteria;
 import com.example.developer.appcommerce.products.domain.model.Product;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public interface IProductsRepository {
         void onDataNotAvailable(String error);
     }
 
-    void getProducts(GetProductsCallback callback);
+    void getProducts(GetProductsCallback callback, ProductCriteria criteria);
 
     void refreshProducts();
 

@@ -16,7 +16,7 @@ public abstract class InfinityScrollListener extends RecyclerView.OnScrollListen
     private final LinearLayoutManager mLayoutManager;
     private final DataLoading mDataLoading;
 
-    public InfinityScrollListener(LinearLayoutManager mLayoutManager, DataLoading mDataLoading) {
+    public InfinityScrollListener( DataLoading mDataLoading, LinearLayoutManager mLayoutManager) {
         this.mLayoutManager = checkNotNull(mLayoutManager);
         this.mDataLoading = checkNotNull(mDataLoading);
     }

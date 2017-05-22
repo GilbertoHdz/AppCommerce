@@ -1,6 +1,8 @@
 package com.example.developer.appcommerce.products;
 
 import com.example.developer.appcommerce.data.products.ProductsRepository;
+import com.example.developer.appcommerce.products.domain.criteria.PagingProductCriteria;
+import com.example.developer.appcommerce.products.domain.criteria.ProductCriteria;
 import com.example.developer.appcommerce.products.domain.model.Product;
 
 import java.util.List;
@@ -28,6 +30,9 @@ public class ProductsPresenter implements ProductsMvp.Presenter {
     public void loadProducts(boolean reload) {
         final boolean reallyReload = reload || isFirstLoad;
 
+        // Ahora, preparamos el criterio de paginación
+        ProductCriteria criteria = new PagingProductCriteria(mCurrentPage, PRODUCTS_LIMIT);
+
         mProductsRepository.getProducts(
                 new ProductsRepository.GetProductsCallback() {
 
@@ -47,7 +52,7 @@ public class ProductsPresenter implements ProductsMvp.Presenter {
                         mProductsView.showProductsError(error);
                     }
                 }
-        );
+        , criteria);
     }
 
     private void processProducts(List<Product> products, boolean reload) {

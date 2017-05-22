@@ -1,5 +1,6 @@
 package com.example.developer.appcommerce.data.products.datasource.cloud;
 
+import com.example.developer.appcommerce.products.domain.criteria.ProductCriteria;
 import com.example.developer.appcommerce.products.domain.model.Product;
 
 import java.util.List;
@@ -18,6 +19,6 @@ public interface ICloudProductsDataSource {
 
     }
 
-    void getProducts(ProductServiceCallback callback);
+    void getProducts(ProductServiceCallback callback, ProductCriteria criteria);
 
 }

@@ -6,6 +6,7 @@ import android.net.NetworkInfo;
 
 import com.example.developer.appcommerce.data.products.datasource.cloud.ICloudProductsDataSource;
 import com.example.developer.appcommerce.data.products.datasource.memory.IMemoryProductsDataSource;
+import com.example.developer.appcommerce.products.domain.criteria.ProductCriteria;
 import com.example.developer.appcommerce.products.domain.model.Product;
 
 import java.util.List;
@@ -31,20 +32,21 @@ public class ProductsRepository implements IProductsRepository {
     }
 
     @Override
-    public void getProducts(GetProductsCallback callback) {
+    public void getProducts(GetProductsCallback callback, final ProductCriteria criteria) {
         if (!mMemoryProductsDataSource.mapIsNull() && !mReload) {
-            getProductsFromMemory(callback);
+            getProductsFromMemory(callback, criteria);
             return;
         }
+
         if (mReload) {
-            getProductsFromServer(callback);
+            getProductsFromServer(callback, criteria);
         } else {
             List<Product> products = mMemoryProductsDataSource.find(null);
 
             if (products.size() > 0) {
                 callback.onProductsLoaded(products);
             } else {
-                getProductsFromServer(callback);
+                getProductsFromServer(callback, criteria);
             }
         }
     }
@@ -54,11 +56,11 @@ public class ProductsRepository implements IProductsRepository {
         mReload = true;
     }
 
-    private void getProductsFromMemory(GetProductsCallback callback) {
-        callback.onProductsLoaded( mMemoryProductsDataSource.find(null) );
+    private void getProductsFromMemory(GetProductsCallback callback, ProductCriteria criteria) {
+        callback.onProductsLoaded( mMemoryProductsDataSource.find(criteria) );
     }
 
-    private void getProductsFromServer(final GetProductsCallback callback) {
+    private void getProductsFromServer(final GetProductsCallback callback, final ProductCriteria criteria) {
         if (!isOnline()) {
             callback.onDataNotAvailable("No hay conexiòn de red.");
             return;
@@ -66,19 +68,18 @@ public class ProductsRepository implements IProductsRepository {
 
         mCloudProductsDataSource.getProducts(
                 new ICloudProductsDataSource.ProductServiceCallback() {
+                    @Override
+                    public void onLoaded(List<Product> products) {
+                        refreshMemoryDataSource(products);
+                        getProductsFromMemory(callback, criteria);
+                    }
 
-            @Override
-            public void onLoaded(List<Product> products) {
-                refreshMemoryDataSource(products);
-                getProductsFromMemory(callback);
-            }
-
-            @Override
-            public void onError(String error) {
-
-                callback.onDataNotAvailable(error);
-            }
-        });
+                    @Override
+                    public void onError(String error) {
+                        callback.onDataNotAvailable(error);
+                    }
+                },
+                null);
     }
 
     private boolean isOnline() {
