@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -28,9 +29,21 @@ public class ProductsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private boolean mLoading = false;
     private boolean mMoreData = false;
 
+    private final static int TYPE_PRODUCT = 1;
+    private final static int TYPE_LOADING_MORE = 2;
+
     public ProductsAdapter(List<Product> mProducts, ProductItemListener mItemListener) {
         this.mProducts = mProducts;
         this.mItemListener = mItemListener;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position < getDataItemCount() && getDataItemCount() > 0) {
+            return TYPE_PRODUCT;
+        }
+
+        return TYPE_LOADING_MORE;
     }
 
     @Override
@@ -39,25 +52,44 @@ public class ProductsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         LayoutInflater inflater = LayoutInflater.from(context);
 
         View view;
+
+        if (viewType == TYPE_LOADING_MORE) {
+            view = inflater.inflate(R.layout.item_loading_footer, parent, false);
+            return new LoadingMoreHolder(view);
+        }
+
         view = inflater.inflate(R.layout.item_product, parent, false);
         return new ProductsHolder(view, mItemListener);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        if (viewHolder instanceof ProductsHolder) {
-            Product product = mProducts.get(position);
-            ProductsHolder productsHolder = (ProductsHolder) viewHolder;
-            productsHolder.price.setText(product.getFormatedPrice());
-            productsHolder.name.setText(product.getName());
-            productsHolder.unitsInStock.setText(product.getFormattedUnitsInStock());
+        /*
+            Si es de tipo carga, entonces genera un nuevo método llamado bindLoadingViewHolder(),
+            donde se muestre la barra de progreso si la carga está activa y si hay más datos.
+        */
+        switch (getItemViewType(position)) {
+            case TYPE_PRODUCT:
+                Product product = mProducts.get(position);
+                ProductsHolder productsHolder = (ProductsHolder) viewHolder;
+                productsHolder.price.setText(product.getFormatedPrice());
+                productsHolder.name.setText(product.getName());
+                productsHolder.unitsInStock.setText(product.getFormattedUnitsInStock());
 
-            Glide.with(viewHolder.itemView.getContext())
-                    .load(product.getImageUrl())
-                    //.diskCacheStrategy(DiskCacheStrategy.ALL)
-                    //.centerCrop()
-                    .into(productsHolder.featuredImage);
+                Glide.with(viewHolder.itemView.getContext())
+                        .load(product.getImageUrl())
+                        //.diskCacheStrategy(DiskCacheStrategy.ALL)
+                        //.centerCrop()
+                        .into(productsHolder.featuredImage);
+                break;
+            case TYPE_LOADING_MORE:
+                bindLoadingViewHolder((LoadingMoreHolder) viewHolder, position);
+                break;
         }
+    }
+
+    private void bindLoadingViewHolder(LoadingMoreHolder viewHolder, int position) {
+        viewHolder.progress.setVisibility((position > 0 && mLoading && mMoreData) ? View.VISIBLE : View.INVISIBLE);
     }
 
     public void replaceData(List<Product> notes) {
@@ -118,6 +150,15 @@ public class ProductsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         @Override
         public void onClick(View v) {
 
+        }
+    }
+
+    private class LoadingMoreHolder extends RecyclerView.ViewHolder {
+        public ProgressBar progress;
+
+        public LoadingMoreHolder(View view) {
+            super(view);
+            progress = (ProgressBar) view.findViewById(R.id.progressBar);
         }
     }
 
