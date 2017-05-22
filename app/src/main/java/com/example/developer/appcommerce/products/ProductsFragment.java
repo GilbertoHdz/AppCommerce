@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,6 +93,19 @@ public class ProductsFragment extends Fragment implements ProductsMvp.View {
     //Relacionar la lista con el Adapter
     private void setUpProductsList() {
         mProductsList.setAdapter(mProductsAdapter);
+
+        final LinearLayoutManager layoutManager =
+                (LinearLayoutManager) mProductsList.getLayoutManager();
+
+        // Se agrega escucha de scroll infinito.
+        mProductsList.addOnScrollListener(
+                new InfinityScrollListener(mProductsAdapter, layoutManager){
+            @Override
+            public void onLoadMore() {
+                mProductsPresenter.loadProducts(false);
+            }
+        });
+
         mProductsList.setHasFixedSize(true);
     }
 

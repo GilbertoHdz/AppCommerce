@@ -20,10 +20,13 @@ import static com.bumptech.glide.util.Preconditions.checkNotNull;
  * Created by developer on 5/21/17.
  */
 
-public class ProductsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ProductsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements DataLoading {
 
     private List<Product> mProducts;
     private ProductItemListener mItemListener;
+
+    private boolean mLoading = false;
+    private boolean mMoreData = false;
 
     public ProductsAdapter(List<Product> mProducts, ProductItemListener mItemListener) {
         this.mProducts = mProducts;
@@ -79,6 +82,16 @@ public class ProductsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
     public int getDataItemCount() {
         return mProducts.size();
+    }
+
+    @Override
+    public boolean isLoadingData() {
+        return mLoading;
+    }
+
+    @Override
+    public boolean isThereMoreData() {
+        return mMoreData;
     }
 
     public class ProductsHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
