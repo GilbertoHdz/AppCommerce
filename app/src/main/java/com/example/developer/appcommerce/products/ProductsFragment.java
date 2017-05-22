@@ -2,6 +2,7 @@ package com.example.developer.appcommerce.products;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.developer.appcommerce.R;
+import com.example.developer.appcommerce.di.DependencyProvider;
 import com.example.developer.appcommerce.products.domain.model.Product;
 
 import java.util.ArrayList;
@@ -37,10 +39,11 @@ public class ProductsFragment extends Fragment implements ProductsMvp.View {
         }
     };
 
+    private ProductsPresenter mProductsPresenter;
+
     public ProductsFragment() {
         //Required empty public constructor
     }
-
 
     public static ProductsFragment newInstance() {
         return new ProductsFragment();
@@ -50,6 +53,15 @@ public class ProductsFragment extends Fragment implements ProductsMvp.View {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mProductsAdapter = new ProductsAdapter(new ArrayList<Product>(0), mItemListener);
+
+        /*
+        Para eliminar la responsabilidad del presentador de saber cómo crear el repositorio.
+        De esta forma inyectamos la dependencia ensamblando los componentes.
+        */
+        mProductsPresenter = new ProductsPresenter(
+                DependencyProvider.provideProductsRepository(getActivity()), this);
+
+        setRetainInstance(true);
     }
 
     @Override
@@ -67,6 +79,14 @@ public class ProductsFragment extends Fragment implements ProductsMvp.View {
         setUpProductsList();
         setUptRefreshLayout();
         return root;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (savedInstanceState == null) {
+            mProductsPresenter.loadProducts(false);
+        }
     }
 
     //Relacionar la lista con el Adapter

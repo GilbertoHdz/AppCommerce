@@ -26,6 +26,8 @@ public class ProductsPresenter implements ProductsMvp.Presenter {
 
     @Override
     public void loadProducts(boolean reload) {
+        final boolean reallyReload = reload || isFirstLoad;
+
         mProductsRepository.getProducts(
                 new ProductsRepository.GetProductsCallback() {
 
