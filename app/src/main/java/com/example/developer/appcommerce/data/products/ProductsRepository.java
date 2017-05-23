@@ -11,7 +11,7 @@ import com.example.developer.appcommerce.products.domain.model.Product;
 
 import java.util.List;
 
-import static com.bumptech.glide.util.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Created by developer on 5/21/17.
@@ -25,10 +25,13 @@ public class ProductsRepository implements IProductsRepository {
 
     private boolean mReload;
 
-    public ProductsRepository(IMemoryProductsDataSource mMemoryProductsDataSource, ICloudProductsDataSource mCloudProductsDataSource, Context mContext) {
-        this.mMemoryProductsDataSource = checkNotNull(mMemoryProductsDataSource);
-        this.mCloudProductsDataSource = checkNotNull(mCloudProductsDataSource);
-        this.mContext = checkNotNull(mContext);
+
+    public ProductsRepository(IMemoryProductsDataSource memoryDataSource,
+                              ICloudProductsDataSource cloudDataSource,
+                              Context context) {
+        mMemoryProductsDataSource = checkNotNull(memoryDataSource);
+        mCloudProductsDataSource = checkNotNull(cloudDataSource);
+        mContext = checkNotNull(context);
     }
 
     @Override
@@ -49,20 +52,20 @@ public class ProductsRepository implements IProductsRepository {
                 getProductsFromServer(callback, criteria);
             }
         }
+
     }
 
-    @Override
-    public void refreshProducts() {
-        mReload = true;
+    private void getProductsFromMemory(GetProductsCallback callback,
+                                       ProductCriteria criteria) {
+
+        callback.onProductsLoaded(mMemoryProductsDataSource.find(criteria));
     }
 
-    private void getProductsFromMemory(GetProductsCallback callback, ProductCriteria criteria) {
-        callback.onProductsLoaded( mMemoryProductsDataSource.find(criteria) );
-    }
+    private void getProductsFromServer(final GetProductsCallback callback,
+                                       final ProductCriteria criteria) {
 
-    private void getProductsFromServer(final GetProductsCallback callback, final ProductCriteria criteria) {
         if (!isOnline()) {
-            callback.onDataNotAvailable("No hay conexiòn de red.");
+            callback.onDataNotAvailable("No hay conexión de red.");
             return;
         }
 
@@ -93,9 +96,14 @@ public class ProductsRepository implements IProductsRepository {
     private void refreshMemoryDataSource(List<Product> products) {
         mMemoryProductsDataSource.deleteAll();
         for (Product product : products) {
-            mMemoryProductsDataSource.save(product); }
+            mMemoryProductsDataSource.save(product);
+        }
         mReload = false;
     }
 
+    @Override
+    public void refreshProducts() {
+        mReload = true;
+    }
 
 }
