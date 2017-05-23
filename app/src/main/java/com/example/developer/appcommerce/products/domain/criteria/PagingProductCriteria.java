@@ -24,15 +24,22 @@ public class PagingProductCriteria implements ProductCriteria {
     @Override
     public List<Product> match(List<Product> products) {
         List<Product> criteriaProducts = new ArrayList<>();
+        int a, b, size, numPages;
 
-        //Sanidad
-        if(mLimit <= 0 || mPage <=0){
+        // Sanidad
+        if (mLimit <= 0 || mPage <= 0) {
             return criteriaProducts;
         }
 
-        int size = products.size();
-        int numPages = size / mLimit;
-        int a,b;
+        size = products.size();
+
+        // ¿La página es más grande que el contenido?
+        if (size < mLimit && mPage == 1) {
+            return products;
+        }
+
+        numPages = size / mLimit;
+
 
         if (mPage > numPages) {
             return criteriaProducts;
@@ -40,6 +47,7 @@ public class PagingProductCriteria implements ProductCriteria {
 
         a = (mPage - 1) * mLimit;
 
+        // ¿Llegamos al final?
         if (a == size) {
             return criteriaProducts;
         }
