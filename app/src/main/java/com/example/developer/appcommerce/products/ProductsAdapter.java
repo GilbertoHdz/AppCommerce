@@ -119,7 +119,8 @@ public class ProductsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
      */
     public void dataStartedLoading() {
         if (mLoading) return;
-        mLoading = true; notifyItemInserted(getLoadingMoreItemPosition());
+        mLoading = true;
+        notifyItemInserted(getLoadingMoreItemPosition());
     }
 
     //en complemento, la desactiva y remueve el ítem.
