@@ -21,9 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link ProductsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragmento para mostrar la lista de productos
  */
 public class ProductsFragment extends Fragment implements ProductsMvp.View {
 
@@ -35,8 +33,8 @@ public class ProductsFragment extends Fragment implements ProductsMvp.View {
 
     private ProductsAdapter.ProductItemListener mItemListener = new ProductsAdapter.ProductItemListener() {
         @Override
-        public void onProductClick(Product clickedNote) {
-            //Aquì se lanzara la pantalla de detalle del productor
+        public void onProductClick(Product clickedProduct) {
+            // Aquí lanzarías la pantalla de detalle del producto
         }
     };
 
@@ -74,11 +72,20 @@ public class ProductsFragment extends Fragment implements ProductsMvp.View {
         //Referencias UI
         mProductsList = (RecyclerView) root.findViewById(R.id.products_list);
         mEmptyView = root.findViewById(R.id.noProducts);
-        mSwipeRefreshLayout = (SwipeRefreshLayout)
-                root.findViewById(R.id.refresh_layout);
-        //Setup
+        mSwipeRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.refresh_layout);
+
+        // Setup
         setUpProductsList();
         setUptRefreshLayout();
+
+        if (savedInstanceState != null) {
+            //Mostrar la lista
+            mProductsList.setVisibility(View.VISIBLE);
+
+            //Ocular el estado Vacio
+            mEmptyView.setVisibility(View.GONE);
+        }
+
         return root;
     }
 
@@ -93,20 +100,19 @@ public class ProductsFragment extends Fragment implements ProductsMvp.View {
     //Relacionar la lista con el Adapter
     private void setUpProductsList() {
         mProductsList.setAdapter(mProductsAdapter);
+        mProductsList.setHasFixedSize(true);
 
         final LinearLayoutManager layoutManager =
                 (LinearLayoutManager) mProductsList.getLayoutManager();
 
         // Se agrega escucha de scroll infinito.
         mProductsList.addOnScrollListener(
-                new InfinityScrollListener(mProductsAdapter, layoutManager){
-            @Override
-            public void onLoadMore() {
-                mProductsPresenter.loadProducts(false);
-            }
-        });
-
-        mProductsList.setHasFixedSize(true);
+                new InfinityScrollListener(mProductsAdapter, layoutManager) {
+                    @Override
+                    public void onLoadMore() {
+                        mProductsPresenter.loadProducts(false);
+                    }
+                });
     }
 
     //Swipe Rrefresh
@@ -119,7 +125,7 @@ public class ProductsFragment extends Fragment implements ProductsMvp.View {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
+                mProductsPresenter.loadProducts(true);
             }
         });
     }
@@ -166,7 +172,7 @@ public class ProductsFragment extends Fragment implements ProductsMvp.View {
     @Override
     public void showProductsError(String msg) {
         //Los errores provenientes desde el Presentador se manejan con un Toast
-        Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG);
+        Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
     }
 
     @Override

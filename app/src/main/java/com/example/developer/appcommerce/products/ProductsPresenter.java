@@ -7,6 +7,8 @@ import com.example.developer.appcommerce.products.domain.model.Product;
 
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Created by developer on 5/21/17.
  */
@@ -21,14 +23,24 @@ public class ProductsPresenter implements ProductsMvp.Presenter {
     private boolean isFirstLoad = true;
     private int mCurrentPage = 1;
 
-    public ProductsPresenter(ProductsRepository mProductsRepository, ProductsMvp.View mProductsView) {
-        this.mProductsRepository = mProductsRepository;
-        this.mProductsView = mProductsView;
+    public ProductsPresenter(ProductsRepository productsRepository,
+                             ProductsMvp.View productsView) {
+        mProductsRepository = checkNotNull(productsRepository);
+        mProductsView = checkNotNull(productsView);
     }
 
     @Override
     public void loadProducts(boolean reload) {
         final boolean reallyReload = reload || isFirstLoad;
+
+        if (reallyReload) {
+            mProductsView.showLoadingState(true);
+            mProductsRepository.refreshProducts();
+            mCurrentPage = 1;
+        } else {
+            mProductsView.showLoadMoreIndicator(true);
+            mCurrentPage++;
+        }
 
         // Ahora, preparamos el criterio de paginación
         ProductCriteria criteria = new PagingProductCriteria(mCurrentPage, PRODUCTS_LIMIT);
