@@ -16,16 +16,14 @@ public abstract class InfinityScrollListener extends RecyclerView.OnScrollListen
     private final LinearLayoutManager mLayoutManager;
     private final DataLoading mDataLoading;
 
-    public InfinityScrollListener( DataLoading mDataLoading, LinearLayoutManager mLayoutManager) {
-        this.mLayoutManager = checkNotNull(mLayoutManager);
-        this.mDataLoading = checkNotNull(mDataLoading);
+    public InfinityScrollListener(DataLoading dataLoading, LinearLayoutManager linearLayoutManager) {
+        mDataLoading = checkNotNull(dataLoading);
+        mLayoutManager = checkNotNull(linearLayoutManager);
     }
 
     @Override
     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-        if (dy < 0 || mDataLoading.isLoadingData() || !mDataLoading.isThereMoreData()) {
-            return;
-        }
+        if (dy < 0 || mDataLoading.isLoadingData() || !mDataLoading.isThereMoreData()) return;
 
         //Cantidad items visibles actualmente en la lista.
         final int visibleItemCount = recyclerView.getChildCount();
