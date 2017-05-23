@@ -10,12 +10,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.developer.appcommerce.R;
 import com.example.developer.appcommerce.products.domain.model.Product;
 
 import java.util.List;
 
-import static com.bumptech.glide.util.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Created by developer on 5/21/17.
@@ -78,8 +79,8 @@ public class ProductsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                 Glide.with(viewHolder.itemView.getContext())
                         .load(product.getImageUrl())
-                        //.diskCacheStrategy(DiskCacheStrategy.ALL)
-                        //.centerCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .centerCrop()
                         .into(productsHolder.featuredImage);
                 break;
             case TYPE_LOADING_MORE:
