@@ -36,12 +36,18 @@ public class ProductsRepository implements IProductsRepository {
 
     @Override
     public void getProducts(GetProductsCallback callback, final ProductCriteria criteria) {
-        if (!mMemoryProductsDataSource.mapIsNull() && !mReload) {
+        // Este código lo desactive para que vieras el efecto "Endless scroll" cada vez
+        // que llegas al límite de la lista.
+        // Quita los comentarios para activar de nuevo la fuente en memoria.
+        // Esto aumenta la velocidad de consulta.
+        /*if (!mMemoryProductsDataSource.mapIsNull() && !mReload) {
             getProductsFromMemory(callback, criteria);
             return;
-        }
+        }*/
 
-        if (mReload) {
+        // Pon de nuevo a {mReload} en el if para activar
+        // la fuente de datos en memoria.
+        if (true) {
             getProductsFromServer(callback, criteria);
         } else {
             List<Product> products = mMemoryProductsDataSource.find(null);
