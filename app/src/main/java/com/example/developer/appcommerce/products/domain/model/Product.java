@@ -1,5 +1,7 @@
 package com.example.developer.appcommerce.products.domain.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Locale;
 import java.util.UUID;
 
@@ -9,12 +11,25 @@ import java.util.UUID;
 
 public class Product {
 
+    @SerializedName("code")
     private String code;
+
+    @SerializedName("name")
     private String name;
+
+    @SerializedName("description")
     private String description;
+
+    @SerializedName("brand")
     private String brand;
+
+    @SerializedName("price")
     private float price;
+
+    @SerializedName("unitInStock")
     private int unitInStock;
+
+    @SerializedName("imageUrl")
     private String imageUrl;
 
     public Product(String name, float price, String imageUrl) {
