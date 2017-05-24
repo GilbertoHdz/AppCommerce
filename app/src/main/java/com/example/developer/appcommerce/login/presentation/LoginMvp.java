@@ -1,7 +1,5 @@
 package com.example.developer.appcommerce.login.presentation;
 
-import com.example.developer.appcommerce.products.ProductsMvp;
-
 /** Created by developer on 5/23/17.
  * Implementar reacciones como métodos
  * ********* Reacciones ************
@@ -29,7 +27,7 @@ public interface LoginMvp {
 
         void showProductsScreen();
 
-        void setPresenter(ProductsMvp.Presenter presenter);
+        void setPresenter(Presenter presenter);
 
     }
 

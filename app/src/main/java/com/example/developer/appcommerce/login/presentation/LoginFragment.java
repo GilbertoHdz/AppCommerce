@@ -1,6 +1,7 @@
 package com.example.developer.appcommerce.login.presentation;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
@@ -13,10 +14,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.common.base.Preconditions;
 import com.example.developer.appcommerce.R;
-import com.example.developer.appcommerce.products.ProductsMvp;
+import com.example.developer.appcommerce.products.ProductsActivity;
 
 /** Concretar la implementación del fragmento implementando la vista.
  1. Definir variables miembros
@@ -100,37 +103,39 @@ public class LoginFragment extends Fragment implements LoginMvp.View {
 
     @Override
     public void showEmailError() {
-
+        mEmailFloatingLabel.setError(getString(R.string.error_login));
     }
 
     @Override
     public void showPasswordError() {
-
+        mPasswordFloatingLabel.setError(getString(R.string.error_password));
     }
 
     @Override
     public void login(String email, String password) {
-
+        //mLoginPresenter.validateCredentials(email, password);
     }
 
     @Override
     public void showLoginError(String error) {
-
+        Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void showLoadingIndicator(boolean show) {
-
+        mProgressLogin.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override
     public void showProductsScreen() {
-
+        //Si la autenticación ha sido exitosa, entonces iniciamos la actividad de productos y cerramos la del login.
+        startActivity(new Intent(getActivity(), ProductsActivity.class)); getActivity().finish();
     }
 
     @Override
-    public void setPresenter(ProductsMvp.Presenter presenter) {
-
+    public void setPresenter(LoginMvp.Presenter presenter) {
+        //Asigna la instancia inyectada al miembro:
+        mLoginPresenter = Preconditions.checkNotNull(presenter);
     }
 
 

@@ -9,5 +9,6 @@
 
     <!-- Errores Login -->
     <string name="error_login">Correo inválido</string>
+    <string name="error_password">Contraseña inválida</string>
 
 </resources>
