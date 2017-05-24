@@ -18,6 +18,17 @@ import com.bumptech.glide.Glide;
 import com.example.developer.appcommerce.R;
 import com.example.developer.appcommerce.products.ProductsMvp;
 
+/** Concretar la implementación del fragmento implementando la vista.
+ 1. Definir variables miembros
+ 2. Definir constantes de argumentos
+ 3. Escribir método 'newInstance()'para prefabricación
+ 4. Tomar argumentos en onCreate() (si existen)
+ 5. Tomar referencias de UI en onCreateView()
+ 6. Programar eventos de UI
+ 7. Implementar interfaz de vista y agregar los controladores
+ 8. Sobrescribir los controladores
+ */
+
 public class LoginFragment extends Fragment implements LoginMvp.View {
 
     // Miembros UI
